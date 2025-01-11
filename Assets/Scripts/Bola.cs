@@ -4,27 +4,53 @@ using UnityEngine;
 
 public class Bola : MonoBehaviour
 {
-    public float speed = 10f;
-    private Rigidbody rb;
-    
-    // Start is called before the first frame update
-    void Start()
+    private Camera mainCamera;
+    public float moveSpeed = 5f; // Speed of player movement
+
+    private void Start()
     {
-        rb = GetComponent<Rigidbody>();
-       
+        // Find the main camera in the scene
+        mainCamera = Camera.main;
+
+        // Hide and lock the cursor
+        Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen
+        Cursor.visible = false; // Make the cursor invisible
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
+        // Rotate the player towards the camera every frame
+        RotatePlayerTowardsCamera();
+
+        // Handle player movement
+        MovePlayer();
     }
 
-    void FixedUpdate()
+    private void RotatePlayerTowardsCamera()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+        if (mainCamera != null)
+        {
+            Vector3 cameraForward = mainCamera.transform.forward;
+            cameraForward.y = 0f; // Ignore the y-axis rotation
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        rb.AddForce(movement * speed);
+            if (cameraForward != Vector3.zero)
+            {
+                Quaternion newRotation = Quaternion.LookRotation(cameraForward);
+                transform.rotation = newRotation;
+            }
+        }
+    }
+
+    private void MovePlayer()
+    {
+        // Get input from the player
+        float horizontalInput = Input.GetAxis("Horizontal"); // A/D or Left/Right Arrow
+        float verticalInput = Input.GetAxis("Vertical");     // W/S or Up/Down Arrow
+
+        // Calculate movement direction relative to the player's current rotation
+        Vector3 moveDirection = transform.forward * verticalInput + transform.right * horizontalInput;
+
+        // Apply movement
+        transform.position += moveDirection * moveSpeed * Time.deltaTime;
     }
 }
