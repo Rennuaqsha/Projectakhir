@@ -11,6 +11,7 @@ public class Bola : MonoBehaviour
     public float deceleration = 5f; // How quickly the speed decreases when input is released
 
     private float currentSpeedMultiplier = 1f; // Current speed multiplier
+    private bool isGrounded = true; // Sta
 
     private void Start()
     {
@@ -27,10 +28,17 @@ public class Bola : MonoBehaviour
         // Rotate the player towards the camera every frame
         RotatePlayerTowardsCamera();
 
-        // Handle player movement
-        MovePlayer();
+        if (isGrounded)
+        {
+            // Move the player every frame
+            MovePlayer();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
-
+    
     private void RotatePlayerTowardsCamera()
     {
         if (mainCamera != null)
@@ -71,6 +79,24 @@ public class Bola : MonoBehaviour
 
         // Apply movement
         transform.position += moveDirection.normalized * baseMoveSpeed * currentSpeedMultiplier * Time.deltaTime;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
+        }
+    }
+
+    IEnumerator DestroyBola()
+    {
+        if (isGrounded)
+        {
+            yield break;
+        }
+        yield return new WaitForSeconds(5);
+        Destroy(gameObject);
     }
 }
 
