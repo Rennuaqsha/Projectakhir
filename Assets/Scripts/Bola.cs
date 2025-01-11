@@ -2,10 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnityEngine;
+
 public class Bola : MonoBehaviour
 {
     private Camera mainCamera;
-    public float moveSpeed = 5f; // Speed of player movement
+    public float baseMoveSpeed = 5f; // Base speed of player movement
+    public float acceleration = 2f; // How quickly the speed increases
+    public float maxSpeedMultiplier = 3f; // Maximum multiplier for the speed
+    public float deceleration = 5f; // How quickly the speed decreases when input is released
+
+    private float currentSpeedMultiplier = 1f; // Current speed multiplier
 
     private void Start()
     {
@@ -47,10 +54,25 @@ public class Bola : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal"); // A/D or Left/Right Arrow
         float verticalInput = Input.GetAxis("Vertical");     // W/S or Up/Down Arrow
 
+        // Check if there is any input
+        if (horizontalInput != 0f || verticalInput != 0f)
+        {
+            // Increase the speed multiplier
+            currentSpeedMultiplier += acceleration * Time.deltaTime;
+            currentSpeedMultiplier = Mathf.Min(currentSpeedMultiplier, maxSpeedMultiplier); // Clamp to max multiplier
+        }
+        else
+        {
+            // Decrease the speed multiplier
+            currentSpeedMultiplier -= deceleration * Time.deltaTime;
+            currentSpeedMultiplier = Mathf.Max(currentSpeedMultiplier, 1f); // Clamp to minimum base speed
+        }
+
         // Calculate movement direction relative to the player's current rotation
         Vector3 moveDirection = transform.forward * verticalInput + transform.right * horizontalInput;
 
         // Apply movement
-        transform.position += moveDirection * moveSpeed * Time.deltaTime;
+        transform.position += moveDirection.normalized * baseMoveSpeed * currentSpeedMultiplier * Time.deltaTime;
     }
 }
+
