@@ -7,6 +7,14 @@ using UnityEngine.SceneManagement;
 public class SceneManager1 : MonoBehaviour
 {
     // Start is called before the first frame update
+    public string playerName;
+
+
+    public class PlayerName
+    {
+        public string newName;
+    }
+
     void Start()
     {
         
