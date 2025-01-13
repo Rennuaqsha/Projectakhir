@@ -1,32 +1,71 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public GameObject enemyPrefab; // Prefab musuh yang akan di-spawn
-    public Transform spawnPoint; // Titik spawn musuh baru
-    private Timer timer; // Referensi ke script Timer
-    // Start is called before the first frame update
+    private Rigidbody enemyRb; // Rigidbody component for physics
+    public bool isOnGround = false; // Check if the enemy has touched the ground
+    private float offGroundTime = 0f; // Time spent off the ground
+    public float respawnTime = 2f; // Maximum time allowed off the ground before respawning
+    public float spawnHeight = 5f; // Initial spawn height
+    public float boundary = 5f; // Boundary for respawning
+
     void Start()
     {
-        timer = GameObject.Find("GameManager").GetComponent<Timer>();
+        // Get the Rigidbody component
+        enemyRb = GetComponent<Rigidbody>();
+        enemyRb.constraints = RigidbodyConstraints.FreezeRotation; // Prevent rotation
+
+        // Spawn the enemy at an initial random location in the air
+        Respawn();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        // Track time off the ground
+        if (!isOnGround)
+        {
+            offGroundTime += Time.deltaTime;
+
+            // Respawn if the enemy fails to touch the ground within the allowed time
+            if (offGroundTime >= respawnTime)
+            {
+                Respawn();
+            }
+        }
+    }
+
+    private void Respawn()
+    {
+        // Randomize position within boundaries and spawn at a specific height
+        transform.position = new Vector3(
+            Random.Range(-boundary, boundary),
+            spawnHeight, // Spawn from the air
+            Random.Range(-boundary, boundary)
+        );
+
+        // Reset variables
+        offGroundTime = 0f;
+        isOnGround = false;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ball"))
+        // Check if the enemy touches the ground
+        if (collision.gameObject.CompareTag("Ground"))
         {
-            timer.AddTime(5f); // Tambah 5 detik
-            timer.AddScore(10); // Tambah 10 poin
-            Destroy(gameObject);
+            isOnGround = true; // Enemy has landed
+            offGroundTime = 0f; // Reset the timer
+            Debug.Log("Enemy has landed on the ground.");
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        // If the enemy leaves the ground, mark it as not on the ground
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isOnGround = false;
+            Debug.Log("Enemy left the ground.");
         }
     }
 }
-
