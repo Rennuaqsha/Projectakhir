@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/StartScane.unity
     guid: 3a98ed71a5c43294c9b98dd175850a7f
+  - enabled: 1
+    path: Assets/Scenes/SceneTerakhir.unity
+    guid: dd739fdb1259e4746a43f61dab66cc19
   m_configObjects: {}
