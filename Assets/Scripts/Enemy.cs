@@ -55,7 +55,7 @@ public class Enemy : MonoBehaviour
         {
             isOnGround = true; // Enemy has landed
             offGroundTime = 0f; // Reset the timer
-            Debug.Log("Enemy has landed on the ground.");
+           
         }
     }
 

@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI; 
 
 public class SceneManager2 : MonoBehaviour
 {
-    public GameObject Enemyprefab;
+    public GameObject enemyPrefab; // Corrected the variable name for clarity
     public GameObject gameOverPanel;
-    private int enemyNumber = 1;
+    private int enemyCount;
+    private int waveNumber = 1; 
 
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI scoreText;
@@ -17,46 +17,42 @@ public class SceneManager2 : MonoBehaviour
     public float timeRemaining = 10f;
     private float boundary = 10.0f;
     
-
-    private bool isGameOver = false;
+    
     private int score = 0; 
 
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("SpawnPrefab",2.0f,5.0f);
+        SpawnPrefab(1);  // Spawn a single enemy at the start
         UpdateTimerText();
         UpdateScoreText();
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!isGameOver)
+        // Check how many enemies are in the scene
+        enemyCount = FindObjectsOfType<Enemy>().Length;
+
+        // If there are no enemies, you can increase the wave or spawn more enemies
+        if (enemyCount == 0)
         {
-            if (timeRemaining > 0)
-            {
-                timeRemaining -= Time.deltaTime;
+            SpawnPrefab(waveNumber);
+        }
+
+        
+               timeRemaining -= Time.deltaTime;
                 UpdateTimerText();
-            }
-
-          //  else
-          // {
-          //      GameOver();
-          //  }
-        }
+        
     }
 
-    private void SpawnPrefab()
+    void SpawnPrefab(int enemiesToSpawn)
     {
-        for (int i = 0; i < enemyNumber; i++)
+        for (int i = 0; i < enemiesToSpawn; i++)
         {
-            Instantiate(Enemyprefab, GenerateSpawnLocation(), Enemyprefab.transform.rotation);
+            Instantiate(enemyPrefab, GenerateSpawnLocation(), enemyPrefab.transform.rotation);
         }
-        enemyNumber = Mathf.Min(enemyNumber + 1, 50); // Cap the number to avoid overpopulation
     }
-
 
     private Vector3 GenerateSpawnLocation()
     {
@@ -64,7 +60,6 @@ public class SceneManager2 : MonoBehaviour
             Random.Range(-boundary, boundary), 
             2.0f, 
             Random.Range(-boundary, boundary)
-            
         );
         return spawnLocation;
     }
@@ -91,11 +86,10 @@ public class SceneManager2 : MonoBehaviour
         scoreText.text = "Score: " + score;
     }
 
-    // void GameOver()
-    // {
+    //void GameOver()
+    //{
     //    isGameOver = true;
-    //    gameOverPanel.SetActive(true); // Tampilkan panel Game Over
-        // Tambahkan logika lain untuk game over di sini
+    //    gameOverPanel.SetActive(true); // Show the Game Over panel
+    //    // You can add other game over logic here, like stopping the timer or showing stats
     //}
 }
-

@@ -9,6 +9,10 @@ public class SceneManager1 : MonoBehaviour
     // Start is called before the first frame update
     public string playerName;
 
+    private AudioSource StartAudio;
+    public AudioClip ButtonClick;
+
+
 
     public class PlayerName
     {
@@ -17,7 +21,7 @@ public class SceneManager1 : MonoBehaviour
 
     void Start()
     {
-        
+        StartAudio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
