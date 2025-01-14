@@ -5,13 +5,15 @@ using UnityEngine;
 public class Bola : MonoBehaviour
 {
     private Camera mainCamera;
-    public float baseMoveSpeed = 5f; // Base speed of player movement
-    public float acceleration = 2f; // How quickly the speed increases
-    public float maxSpeedMultiplier = 3f; // Maximum multiplier for the speed
-    public float deceleration = 5f; // How quickly the speed decreases when input is released
+    public float baseMoveSpeed = 5f; 
+    public float acceleration = 2f; 
+    public float maxSpeedMultiplier = 3f; 
+    public float deceleration = 5f; 
 
     private float currentSpeedMultiplier = 1f; // Current speed multiplier
     private bool isGrounded = true; // Sta
+
+    private AudioSource PlayerAudio;
 
     private void Start()
     {
@@ -19,8 +21,10 @@ public class Bola : MonoBehaviour
         mainCamera = Camera.main;
 
         // Hide and lock the cursor
-        Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen
-        Cursor.visible = false; // Make the cursor invisible
+        Cursor.lockState = CursorLockMode.Locked; 
+        Cursor.visible = false; 
+
+        PlayerAudio = GetComponent<AudioSource>();
     }
 
     private void Update()
