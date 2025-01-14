@@ -12,7 +12,7 @@ public class SceneManager3 : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        PlayerAudio = GetComponent<AudioSource>();
     }
 
     public void Quit()
